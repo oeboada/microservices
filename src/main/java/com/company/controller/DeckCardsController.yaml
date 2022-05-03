@@ -1,0 +1,130 @@
+openapi: "3.0.0"
+info:
+  version: 0.0.1
+  title: Deck of Cards
+  description: Generate a shuffled of cards either draw or skip cards
+  license:
+    name: Oscar Eleazar Boada Romero
+servers:
+  - url: http://104.198.178.179:8091
+paths:
+  /deckscards/generateDeckId:
+    post:
+      summary: Create a new card deck for user and get deckId
+      operationId: generateDeckId
+      tags:
+        - deckscards
+      responses:
+        '200':
+          description: A deckId
+        '500':
+          description: Internal server error
+  /deckscards/nextCard/{deckId}:
+    put:
+      summary: Draw a card 1-by-1 for user
+      operationId: nextCard
+      tags:
+        - deckscards
+      parameters:
+        - name: deckId
+          in: path
+          required: true
+          description: id of deck
+          schema:
+            type: string
+        - name: cardIndex
+          in: query
+          required: false
+          description: index of last card drawn
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Card drawn with card index
+        '500':
+          description: Internal server error
+        '400':
+          description: Invalid id supplied
+        '404':
+          description: Deck not found
+  /deckscards/skipCard/{deckId}:
+    put:
+      summary: Skip a card for user
+      operationId: skipCard
+      tags:
+        - deckscards
+      parameters:
+        - name: deckId
+          in: path
+          required: true
+          description: id of deck
+          schema:
+            type: string
+        - name: cardIndex
+          in: query
+          required: false
+          description: index of last card drawn
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Card drawn with card index
+        '500':
+          description: Internal server error
+        '400':
+          description: Invalid id supplied
+        '404':
+          description: Deck not found
+components:
+  schemas:
+    Suit:
+      type: object
+    Card:
+      type: object
+      required:
+        - id
+        - number
+        - suit
+      properties:
+        id:
+          type: integer
+        cardIndex:
+          type: integer
+        number:
+          type: integer
+        suit:
+          type: object
+    Deck:
+      type: object
+      required:
+        - id
+        - stack
+        - createdAt
+        - lastUpdate
+        - overwrite
+      properties:
+        id:
+          type: integer
+        stack:
+          type: array
+          items:
+            $ref: "#/components/schemas/Card"
+        createdAt:
+          type: string
+        lastUpdate:
+          type: string
+        overwrite:
+          type: boolean
+    CardDefinition:
+      type: object
+      required:
+        - id
+        - number
+        - suit
+      properties:
+        id:
+          type: integer
+        number:
+          type: integer
+        suit:
+          type: object
